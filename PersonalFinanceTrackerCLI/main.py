@@ -16,13 +16,23 @@ def main():
                     amount = input("Enter amount: ")
                     note = input("Enter a short note (or press Enter to skip): ")
 
+                    try:
+                        amount = float(amount)
+                    except ValueError:
+                        print("Amount must be a number.")
+                        continue
+
                     tracker.add_transaction(typ, category, amount, note)
                     continue
+
+
                 case "view":
                     print("================== VIEWING TRANSACTIONS ==================")
                     tracker.view_transactions()
                     print("================== DONE VIEWING TRANSACTIONS ==================")
                     continue
+
+
                 case "budget":
                     category = input("Enter category (Food/Transport/Entertainment/Bills/Other):  ")
                     max_amt = input("Enter amount: ")
@@ -33,10 +43,14 @@ def main():
                         continue
                     tracker.set_budget(category, max_amt)
                     continue
+
+
                 case "summary":
                     print("================== VIEWING SUMMARY ==================")
                     tracker.view_summary()
                     continue
+
+                    
                 case "quit":
                     print("Goodbye!")
                     break

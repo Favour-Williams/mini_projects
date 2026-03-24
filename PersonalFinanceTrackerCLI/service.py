@@ -47,7 +47,7 @@ class PersonalFinanceTracker:
             csvFile1 = csv.reader(csvfile1)
             next(csvFile1)
             print(f'{"Date":<12} {"Type":<10} {"Category":<15} {"Amount":<10} {"Note":<20}')
-            print("-" * 67)  # a divider line for readability
+            print("-" * 67)
             for line in csvFile1:
                 print(f'{line[0]:<12} {line[1]:<10} {line[2]:<15} {line[3]:<10} {line[4]:<20}')
         
@@ -73,10 +73,15 @@ class PersonalFinanceTracker:
         total_income = 0.0
         total_expenses = 0.0
         category_totals = {}
+        budget_limits = {}
 
-        with open(self.file1, 'r', newline='') as csvfile1:
+        with open(self.file1, 'r', newline='') as csvfile1, open(self.file2, 'r', newline='') as csvfile2:
+
             csvFile1 = csv.reader(csvfile1)
             next(csvFile1)  
+
+            csvFile2 = csv.reader(csvfile2)
+            next(csvFile2)  
 
             for line in csvFile1:
                 amount = float(line[3])
@@ -96,7 +101,27 @@ class PersonalFinanceTracker:
 
             print('--- Spending by Category ---')
             for key, value in category_totals.items():
-                print(f'{key}      P{value}')
+                print(f'{key}      P{value:.2f}')
+
+
+            for line in csvFile2:
+                cat = line[0].lower()    
+                limit = float(line[1])   
+                budget_limits[cat] = limit
+
+            
+            print('--- Budget Status ---')
+            for cat, spent in category_totals.items():
+                if cat in budget_limits:      
+                    limit = budget_limits[cat]
+                    percentage = (spent / limit) * 100
+                    if spent > limit:
+                        status = "⚠️  OVER BUDGET"
+                    elif percentage >= 80:
+                        status = "⚠️  Nearly over"
+                    else:
+                        status = "✅"
+                    print(f'{cat}: spent P{spent:.2f} of P{limit:.2f}  {status}')
                     
         
 
