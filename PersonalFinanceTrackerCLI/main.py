@@ -6,7 +6,7 @@ def main():
         tracker.load_file()
         while True:
             print("Welcome to your Personal Finance Tracker")
-            user_input = input("Enter service/command(add, view, budget, summary, quit): ")
+            user_input = input("Enter service/command(add, delete, view, filter, budget, summary, quit): ")
 
             match user_input.lower():
                 case "add":
@@ -50,6 +50,18 @@ def main():
                     tracker.view_summary()
                     continue
 
+
+                case "delete":
+                    print("===== DELETE A TRANSACTION =====")
+                    tracker.delete_transaction()
+                    continue
+
+                case "filter":
+                    moncat = input("Filter by (month/category): ")
+                    typ = input(f"Enter {moncat}: ")
+
+                    tracker.filter_transactions(moncat, typ)
+                    continue
                     
                 case "quit":
                     print("Goodbye!")

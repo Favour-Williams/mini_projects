@@ -116,12 +116,70 @@ class PersonalFinanceTracker:
                     limit = budget_limits[cat]
                     percentage = (spent / limit) * 100
                     if spent > limit:
-                        status = "⚠️  OVER BUDGET"
+                        status = " OVER BUDGET"
                     elif percentage >= 80:
-                        status = "⚠️  Nearly over"
+                        status = " Nearly over"
                     else:
-                        status = "✅"
+                        status = "OK"
                     print(f'{cat}: spent P{spent:.2f} of P{limit:.2f}  {status}')
+
+    def delete_transaction(self):
+        with open(self.file1, 'r', newline='') as csvfile1:
+            csvFile1 = csv.reader(csvfile1)
+            header = next(csvFile1, None)
+            
+            if header is None:
+                print("No transactions found.")
+                return
+
+
+            rows = list(csvFile1)
+
+            if len(rows) == 0:
+                print("No transactions found.")
+                return
+
+            
+
+            for i, row in enumerate(rows, start=1):
+                print(f'{i}.  {row[0]}  {row[1]}   {row[2]}   {row[3]}   {row[4]}')
+
+            try:
+                trans_id = int(input("Enter the number to delete (or 0 to cancel): "))
+            except ValueError:
+                print("input has to be a number")
+                return
+
+            if trans_id == 0:
+                return
+            elif trans_id-1 >= len(rows):
+                print("Enter id as listed above")
+                return
+            else:
+                rows.pop(trans_id-1)
+            with open(self.file1, 'w', newline='') as csvfile1:
+               
+                writer = csv.writer(csvfile1)
+                writer.writerow(header) 
+                writer.writerows(rows)
+
+
+    def filter_transactions(self, moncat, typ):
+        with open(self.file1, 'r', newline='') as csvfile1:
+            csvFile1 = csv.reader(csvfile1)
+            next(csvFile1)
+            print(f'{"Date":<12} {"Type":<10} {"Category":<15} {"Amount":<10} {"Note":<20}')
+            print("-" * 67)
+            for line in csvFile1:
+                if moncat.lower() == "category" and line[2].lower() == typ.lower():
+                    print(f'{line[0]:<12} {line[1]:<10} {line[2]:<15} {line[3]:<10} {line[4]:<20}')
+
+                if moncat.lower() == "month":
+                    month = line[0][5:7]
+                    if month == typ:
+                        print(f'{line[0]:<12} {line[1]:<10} {line[2]:<15} {line[3]:<10} {line[4]:<20}')
+
+
                     
         
 
