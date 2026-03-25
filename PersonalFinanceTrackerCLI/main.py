@@ -1,16 +1,18 @@
 from service import PersonalFinanceTracker
+from colorama import init, Fore, Style
+init(autoreset=True)  
 
 def main():
     tracker = PersonalFinanceTracker()
     try:
         tracker.load_file()
         while True:
-            print("Welcome to your Personal Finance Tracker")
-            user_input = input("Enter service/command(add, delete, view, filter, budget, summary, quit): ")
+            print(Style.BRIGHT + Fore.YELLOW + "Welcome to your Personal Finance Tracker")
+            user_input = input(Fore.MAGENTA + "Enter service/command(add, delete, view, filter, budget, summary, quit): ")
 
             match user_input.lower():
                 case "add":
-                    print("============ ADD TRANSACTION ============")
+                    print(Style.BRIGHT + Fore.CYAN + "============ ADD TRANSACTION ============")
                     typ = input("Enter type (income/expense): ")
                     category = input("Enter category (Food/Transport/Entertainment/Bills/Other):  ")
                     amount = input("Enter amount: ")
@@ -19,7 +21,7 @@ def main():
                     try:
                         amount = float(amount)
                     except ValueError:
-                        print("Amount must be a number.")
+                        print(Fore.RED + "Amount must be a number.")
                         continue
 
                     tracker.add_transaction(typ, category, amount, note)
@@ -27,9 +29,9 @@ def main():
 
 
                 case "view":
-                    print("================== VIEWING TRANSACTIONS ==================")
+                    print(Style.BRIGHT + Fore.CYAN + "================== VIEWING TRANSACTIONS ==================")
                     tracker.view_transactions()
-                    print("================== DONE VIEWING TRANSACTIONS ==================")
+                    print(Style.BRIGHT + Fore.CYAN + "================== DONE VIEWING TRANSACTIONS ==================")
                     continue
 
 
@@ -39,20 +41,20 @@ def main():
                     try:
                         max_amt = float(max_amt)
                     except ValueError:
-                        print("Amount must be a number.")
+                        print(Fore.RED + "Amount must be a number.")
                         continue
                     tracker.set_budget(category, max_amt)
                     continue
 
 
                 case "summary":
-                    print("================== VIEWING SUMMARY ==================")
+                    print(Style.BRIGHT + Fore.CYAN + "================== VIEWING SUMMARY ==================")
                     tracker.view_summary()
                     continue
 
 
                 case "delete":
-                    print("===== DELETE A TRANSACTION =====")
+                    print(Style.BRIGHT + Fore.CYAN + "===== DELETE A TRANSACTION =====")
                     tracker.delete_transaction()
                     continue
 

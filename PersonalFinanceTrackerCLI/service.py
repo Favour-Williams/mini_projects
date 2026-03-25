@@ -1,7 +1,8 @@
 import csv
 import os
 from datetime import date  
-
+from colorama import init, Fore, Style
+init(autoreset=True)  
 
 class PersonalFinanceTracker:
     def __init__(self, file1="transactions.csv", file2="budget.csv")->None:
@@ -29,10 +30,10 @@ class PersonalFinanceTracker:
         categories = ["food", "transport", "entertainment", "bills", "other"]
 
         if typ.lower() not in types:
-            print("Types has to be income or expense thank you.")
+            print(Fore.RED + "Types has to be income or expense thank you.")
             return 
         if category.lower() not in categories:
-            print("Category has to be Food/Transport/Entertainment/Bills/Other thank you.")
+            print(Fore.RED + "Category has to be Food/Transport/Entertainment/Bills/Other thank you.")
             return
         today = date.today()
         transaction_data = [today, typ, category, amount, note]
@@ -40,7 +41,7 @@ class PersonalFinanceTracker:
         with open(self.file1, 'a', newline='') as csvfile1:
             csvwriter1 = csv.writer(csvfile1)
             csvwriter1.writerow(transaction_data)
-        print('Transaction saved!')
+        print(Fore.GREEN + 'Transaction saved!')
 
     def view_transactions(self):
         with open(self.file1, 'r', newline='') as csvfile1:
@@ -67,7 +68,7 @@ class PersonalFinanceTracker:
         with open(self.file2, 'a', newline='') as csvfile2:
             csvwriter2 = csv.writer(csvfile2)
             csvwriter2.writerow(budget_data)
-        print('Budget saved!')
+        print(Fore.GREEN + 'Budget saved!')
 
     def view_summary(self):
         total_income = 0.0
@@ -99,7 +100,7 @@ class PersonalFinanceTracker:
 
             print(f'\n')
 
-            print('--- Spending by Category ---')
+            print(Fore.BLUE + '--- Spending by Category ---')
             for key, value in category_totals.items():
                 print(f'{key}      P{value:.2f}')
 
@@ -110,17 +111,17 @@ class PersonalFinanceTracker:
                 budget_limits[cat] = limit
 
             
-            print('--- Budget Status ---')
+            print(Fore.BLUE + '--- Budget Status ---')
             for cat, spent in category_totals.items():
                 if cat in budget_limits:      
                     limit = budget_limits[cat]
                     percentage = (spent / limit) * 100
                     if spent > limit:
-                        status = " OVER BUDGET"
+                        status = Fore.RED + " OVER BUDGET"
                     elif percentage >= 80:
-                        status = " Nearly over"
+                        status = Fore.YELLOW + " Nearly over"
                     else:
-                        status = "OK"
+                        status = Fore.GREEN + "OK"
                     print(f'{cat}: spent P{spent:.2f} of P{limit:.2f}  {status}')
 
     def delete_transaction(self):
@@ -129,14 +130,14 @@ class PersonalFinanceTracker:
             header = next(csvFile1, None)
             
             if header is None:
-                print("No transactions found.")
+                print(Fore.RED + "No transactions found.")
                 return
 
 
             rows = list(csvFile1)
 
             if len(rows) == 0:
-                print("No transactions found.")
+                print(Fore.RED + "No transactions found.")
                 return
 
             
@@ -147,13 +148,13 @@ class PersonalFinanceTracker:
             try:
                 trans_id = int(input("Enter the number to delete (or 0 to cancel): "))
             except ValueError:
-                print("input has to be a number")
+                print(Fore.RED + "input has to be a number")
                 return
 
             if trans_id == 0:
                 return
             elif trans_id-1 >= len(rows):
-                print("Enter id as listed above")
+                print(Fore.RED + "Enter id as listed above")
                 return
             else:
                 rows.pop(trans_id-1)
