@@ -101,8 +101,16 @@ class PersonalFinanceTracker:
             print(f'\n')
 
             print(Fore.BLUE + '--- Spending by Category ---')
+            try:
+                max_spent = max(category_totals.values())  
+            except ValueError:
+                print(Fore.RED + 'Empty catalog')
+                return
+                              
             for key, value in category_totals.items():
-                print(f'{key}      P{value:.2f}')
+                bar_length = int((value / max_spent) * 20) 
+                bar = (Fore.GREEN + "█") * bar_length  
+                print(f'{key} {bar:<20} P{value:.2f}')
 
 
             for line in csvFile2:
@@ -181,8 +189,91 @@ class PersonalFinanceTracker:
                         print(f'{line[0]:<12} {line[1]:<10} {line[2]:<15} {line[3]:<10} {line[4]:<20}')
 
 
+    def export(self):
+        print("================== Exporting ==================")
+        today = date.today()
+        filename = f"summary_{today.month:02d}_{today.year}.txt"
+        with open(filename, 'w') as f:
+            heading = f"===== PERSONAL FINANCE TRACKER - {today.month:02d} {today.year} ====="
+            
+
+            total_income = 0.0
+            total_expenses = 0.0
+            category_totals = {}
+            budget_limits = {}
+
+            with open(self.file1, 'r', newline='') as csvfile1, open(self.file2, 'r', newline='') as csvfile2:
+
+                csvFile1 = csv.reader(csvfile1)
+                next(csvFile1)  
+
+                csvFile2 = csv.reader(csvfile2)
+                next(csvFile2)  
+
+                for line in csvFile1:
+                    amount = float(line[3])
                     
-        
+                    if line[1].lower() == "income":
+                        total_income += amount
+                    elif line[1].lower() == "expense":
+                        total_expenses += amount
+                        cat = line[2].lower()
+                        category_totals[cat] = category_totals.get(cat, 0.0) + amount
+                
+                total_in = f'Total Income:      P {total_income:.2f}'
+                total_ex = f'Total Expenses:    P {total_expenses:.2f}'
+                balance = f'Balance:           P {total_income - total_expenses:.2f}'
+
+                f.write(f'{heading}\n')
+                f.write(f'{total_in}\n')
+                f.write(f'{total_ex}\n')
+                f.write(f'{balance}\n')
+
+                heading2 = '--- Spending by Category ---'
+                try:
+                    max_spent = max(category_totals.values())  
+                except ValueError:
+                    print(Fore.RED + 'Empty catalog')
+                    return
+                spend_cat = ''    
+
+                f.write(f'{heading2}\n')
+
+                for key, value in category_totals.items():
+                    bar_length = int((value / max_spent) * 20) 
+                    bar = "█" * bar_length  
+                    spend_cat = f'{key} {bar:<20} P{value:.2f}'
+                    f.write(f'{spend_cat}\n')
+
+
+                for line in csvFile2:
+                    cat = line[0].lower()    
+                    limit = float(line[1])   
+                    budget_limits[cat] = limit
+
+                
+                heading22 = '--- Budget Status ---'
+                budget = ''
+
+                f.write(f'{heading22}\n')
+                for cat, spent in category_totals.items():
+                    if cat in budget_limits:      
+                        limit = budget_limits[cat]
+                        percentage = (spent / limit) * 100
+                        if spent > limit:
+                            status = " OVER BUDGET"
+                        elif percentage >= 80:
+                            status = " Nearly over"
+                        else:
+                            status = "OK"
+                        budget = f'{cat}: spent P{spent:.2f} of P{limit:.2f}  {status}'
+                        f.write(f'{budget}\n')
+        print(Fore.GREEN + f'✅ Summary exported to {filename}!')
+               
+
+
+                
+            
 
 
 

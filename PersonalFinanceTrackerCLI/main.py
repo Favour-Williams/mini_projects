@@ -8,7 +8,7 @@ def main():
         tracker.load_file()
         while True:
             print(Style.BRIGHT + Fore.YELLOW + "Welcome to your Personal Finance Tracker")
-            user_input = input(Fore.MAGENTA + "Enter service/command(add, delete, view, filter, budget, summary, quit): ")
+            user_input = input(Fore.MAGENTA + "Enter service/command(add, delete, view, filter, budget, summary, export, quit): ")
 
             match user_input.lower():
                 case "add":
@@ -64,7 +64,10 @@ def main():
 
                     tracker.filter_transactions(moncat, typ)
                     continue
+                case "export":
+                    tracker.export()
                     
+                    continue
                 case "quit":
                     print("Goodbye!")
                     break

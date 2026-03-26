@@ -1,0 +1,7 @@
+===== PERSONAL FINANCE TRACKER - 03 2026 =====
+Total Income:      P 0.00
+Total Expenses:    P 5000.00
+Balance:           P -5000.00
+--- Spending by Category ---
+other ████████████████████ P5000.00
+--- Budget Status ---
